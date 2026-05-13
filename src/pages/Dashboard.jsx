@@ -56,24 +56,7 @@ const Dashboard = () => {
 
     const currentCgpa = chartData.length > 0 ? chartData[chartData.length - 1].cgpa : 0;
     
-    const totalDegreeCredits = degreeCredits || 144;
-    const target = targetCgpa || 3.5;
-    const remainingCredits = Math.max(0, totalDegreeCredits - totalCredits);
-    
-    let predictionStr = "0.00";
-    if (remainingCredits > 0) {
-      const requiredPoints = (target * totalDegreeCredits) - totalPoints;
-      const requiredCgpa = requiredPoints / remainingCredits;
-      if (requiredCgpa > 4.0) {
-        predictionStr = ">4.0 Req.";
-      } else if (requiredCgpa <= 0) {
-        predictionStr = "Goal Met";
-      } else {
-        predictionStr = requiredCgpa.toFixed(2) + " Req.";
-      }
-    } else {
-       predictionStr = currentCgpa >= target ? "Goal Met" : "Missed";
-    }
+    const predictionStr = currentCgpa > 0 ? `~${currentCgpa.toFixed(2)} (Projected)` : "N/A";
     
     return { chartData, currentCgpa, totalCredits, prediction: predictionStr };
   };
@@ -381,16 +364,14 @@ const Dashboard = () => {
           <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
             <TrendingUp size={24} className="text-primary"/> GPA Progression
           </h2>
-          <div className="h-[300px] w-full border border-gray-200 rounded-2xl p-4 bg-white">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                <XAxis dataKey="semester" tick={{ fill: '#374151', fontSize: 12 }} dy={10} axisLine={false} tickLine={false} />
-                <YAxis domain={[2.0, 4.0]} tick={{ fill: '#374151', fontSize: 12 }} axisLine={false} tickLine={false} />
-                <Line isAnimationActive={false} type="monotone" dataKey="cgpa" name="Cumulative CGPA" stroke="#10b981" strokeWidth={3} dot={{ r: 4, fill: '#10b981' }} />
-                <Line isAnimationActive={false} type="monotone" dataKey="gpa" name="Semester GPA" stroke="#3b82f6" strokeWidth={2} strokeDasharray="5 5" dot={{ r: 4 }} />
-              </LineChart>
-            </ResponsiveContainer>
+          <div className="flex justify-center w-full border border-gray-200 rounded-2xl p-4 bg-white">
+            <LineChart width={700} height={300} data={chartData} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+              <XAxis dataKey="semester" tick={{ fill: '#374151', fontSize: 12 }} dy={10} axisLine={false} tickLine={false} interval={0} />
+              <YAxis domain={[2.0, 4.0]} tick={{ fill: '#374151', fontSize: 12 }} axisLine={false} tickLine={false} />
+              <Line isAnimationActive={false} type="monotone" dataKey="cgpa" name="Cumulative CGPA" stroke="#10b981" strokeWidth={3} dot={{ r: 4, fill: '#10b981' }} />
+              <Line isAnimationActive={false} type="monotone" dataKey="gpa" name="Semester GPA" stroke="#3b82f6" strokeWidth={2} strokeDasharray="5 5" dot={{ r: 4 }} />
+            </LineChart>
           </div>
         </div>
 
