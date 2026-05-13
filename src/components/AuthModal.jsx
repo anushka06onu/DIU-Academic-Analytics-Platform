@@ -89,8 +89,15 @@ const AuthModal = ({ isOpen, onClose }) => {
       toast.error('Please enter your email address first.');
       return;
     }
+
+    const emailLower = email.toLowerCase().trim();
+    if (!emailLower.endsWith('diu.edu.bd') && !emailLower.endsWith('daffodilvarsity.edu.bd')) {
+      toast.error('Only DIU student or faculty emails are allowed (e.g., @diu.edu.bd or @daffodilvarsity.edu.bd).');
+      return;
+    }
+
     try {
-      await sendPasswordResetEmail(auth, email);
+      await sendPasswordResetEmail(auth, emailLower);
       toast.success('Password reset email sent!');
     } catch (error) {
       if (error.code === 'auth/user-not-found') {
