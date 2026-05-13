@@ -46,8 +46,10 @@ const LandingPage = () => {
       <Navbar />
 
       <main className="flex-1 container mx-auto px-6 pt-32 pb-32 relative">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-primary/20 blur-[120px] rounded-full pointer-events-none" />
-        <div className="absolute top-40 right-0 w-[400px] h-[400px] bg-blue-500/10 blur-[100px] rounded-full pointer-events-none" />
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-primary/20 blur-[120px] rounded-full" />
+          <div className="absolute top-40 right-0 w-[400px] h-[400px] bg-blue-500/10 blur-[100px] rounded-full" />
+        </div>
 
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <motion.div
@@ -138,86 +140,6 @@ const LandingPage = () => {
           </div>
         </motion.div>
       </main>
-
-      <section id="features" className="py-24 bg-white dark:bg-card-dark border-t border-gray-200 dark:border-gray-800 relative z-20">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Everything You Need for Academic Excellence</h2>
-            <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Our platform provides all the tools required to track, analyze, and predict your academic trajectory with unparalleled clarity.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
-            {features.map((feature, index) => (
-              <motion.div 
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="p-6 rounded-2xl bg-gray-50 dark:bg-background-dark border border-gray-100 dark:border-gray-800 hover:shadow-xl transition-all hover:-translate-y-1 group"
-              >
-                <div className="w-12 h-12 rounded-xl bg-white dark:bg-card-dark border border-gray-200 dark:border-gray-700 flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform">
-                  {feature.icon}
-                </div>
-                <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-sm">
-                  {feature.description}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="faq" className="py-24 bg-gray-50 dark:bg-background-dark border-t border-gray-200 dark:border-gray-800 relative z-20">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Frequently Asked Questions</h2>
-            <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Everything you need to know about the DIU Academic Analytics Platform.
-            </p>
-          </div>
-          
-          <div className="max-w-3xl mx-auto space-y-4">
-            {[
-              { q: 'Is this platform free?', a: 'Yes! The platform is completely free for all DIU students to use.' },
-              { q: 'Is my data secure?', a: 'Absolutely. We use Google Firebase for enterprise-grade security and authentication.' },
-              { q: 'How does the prediction system work?', a: 'It calculates your required GPA based on your current CGPA, completed credits, and the target CGPA you set for your graduation.' },
-              { q: 'Can I export my report?', a: 'Yes, you can instantly export a perfectly formatted PDF of your dashboard and statistics directly from the platform.' }
-            ].map((faq, idx) => {
-              const [isOpen, setIsOpen] = useState(false);
-              return (
-                <div key={idx} className="bg-white dark:bg-card-dark rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
-                  <button 
-                    onClick={() => setIsOpen(!isOpen)}
-                    className="w-full px-6 py-4 flex items-center justify-between font-bold text-lg text-left hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
-                  >
-                    {faq.q}
-                    <div className={`transform transition-transform ${isOpen ? 'rotate-180' : ''}`}>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                    </div>
-                  </button>
-                  <AnimatePresence>
-                    {isOpen && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                      >
-                        <div className="px-6 pb-4 text-gray-600 dark:text-gray-400 border-t border-gray-100 dark:border-gray-800 mt-2 pt-4">
-                          {faq.a}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
 
       <Footer />
     </div>

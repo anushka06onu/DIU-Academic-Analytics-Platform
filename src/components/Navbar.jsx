@@ -38,8 +38,8 @@ const Navbar = () => {
     </>
   ) : (
     <>
-      <a href="/#features" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 hover:text-primary transition-colors">Features</a>
-      <a href="/#faq" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 hover:text-primary transition-colors">FAQ</a>
+      <NavLink to="/features" onClick={() => setIsMobileMenuOpen(false)} className={({isActive}) => `block py-2 ${isActive ? "text-primary font-bold" : "hover:text-primary transition-colors"}`}>Features</NavLink>
+      <NavLink to="/faq" onClick={() => setIsMobileMenuOpen(false)} className={({isActive}) => `block py-2 ${isActive ? "text-primary font-bold" : "hover:text-primary transition-colors"}`}>FAQ</NavLink>
     </>
   );
 
