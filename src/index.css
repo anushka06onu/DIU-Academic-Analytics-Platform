@@ -19,3 +19,25 @@
 .glassmorphism {
   @apply bg-white/70 dark:bg-card-dark/70 backdrop-blur-md border border-white/20 dark:border-gray-700/50 shadow-lg;
 }
+
+@media print {
+  nav, footer, button {
+    display: none !important;
+  }
+  body, html {
+    background-color: white !important;
+    color: black !important;
+    height: auto !important;
+  }
+  .dark .text-white, .dark .text-gray-100, .dark .text-gray-300, .dark .text-gray-400 {
+    color: black !important;
+  }
+  .dark .bg-card-dark, .dark .bg-background-dark {
+    background-color: white !important;
+    border-color: #e5e7eb !important;
+  }
+  #pdf-content {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}

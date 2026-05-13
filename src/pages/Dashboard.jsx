@@ -66,33 +66,11 @@ const Dashboard = () => {
 
   const { chartData, currentCgpa, totalCredits, prediction } = calculateData();
 
-  const handleExportPDF = async () => {
-    const input = document.getElementById('pdf-content');
-    if (!input) return;
-    
-    setIsExporting(true);
-    const toastId = toast.loading('Generating PDF Report...');
-    
-    try {
-      const canvas = await html2canvas(input, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: document.documentElement.classList.contains('dark') ? '#0f172a' : '#f9fafb'
-      });
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save('Academic_Report.pdf');
-      toast.success('PDF Downloaded successfully!', { id: toastId });
-    } catch (err) {
-      console.error("PDF Export Error: ", err);
-      toast.error(`PDF Error: ${err.message || 'Check console for details'}`, { id: toastId, duration: 6000 });
-    } finally {
-      setIsExporting(false);
-    }
+  const handleExportPDF = () => {
+    toast.success('Select "Save as PDF" in the print dialog!', { duration: 4000 });
+    setTimeout(() => {
+      window.print();
+    }, 500);
   };
 
   const loadExampleData = () => {
