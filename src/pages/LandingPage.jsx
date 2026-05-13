@@ -8,14 +8,13 @@ import useStore from '../store/useStore';
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  const { user } = useStore();
+  const { user, setAuthOpen } = useStore();
 
   const handleStart = () => {
     if (user) {
       navigate('/dashboard');
     } else {
-      // the Navbar handles auth state now
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setAuthOpen(true);
     }
   };
 

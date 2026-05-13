@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { GraduationCap, BookOpen, TrendingUp, Award, AlertTriangle, ArrowUpRight, ArrowDownRight, FileDown } from 'lucide-react';
 import useStore from '../store/useStore';
-import jsPDF from 'jspdf';
+import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import toast from 'react-hot-toast';
 

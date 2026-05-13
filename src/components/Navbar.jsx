@@ -7,9 +7,8 @@ import useStore from '../store/useStore';
 import AuthModal from './AuthModal';
 
 const Navbar = () => {
-  const { user, theme, toggleTheme } = useStore();
+  const { user, theme, toggleTheme, isAuthOpen, setAuthOpen } = useStore();
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isAuthOpen, setIsAuthOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -30,7 +29,7 @@ const Navbar = () => {
 
   return (
     <>
-      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+      <AuthModal isOpen={isAuthOpen} onClose={() => setAuthOpen(false)} />
       <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled || !isLandingPage ? 'bg-white/80 dark:bg-card-dark/80 backdrop-blur-md shadow-sm py-4 border-b border-gray-200 dark:border-gray-800' : 'bg-transparent py-6'}`}>
         <div className="container mx-auto px-6 flex items-center justify-between">
           <a href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
@@ -71,7 +70,7 @@ const Navbar = () => {
               </div>
             ) : (
               <button 
-                onClick={() => setIsAuthOpen(true)}
+                onClick={() => setAuthOpen(true)}
                 className="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors shadow-lg"
               >
                 Sign In

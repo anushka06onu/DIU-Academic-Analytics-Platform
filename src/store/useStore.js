@@ -30,6 +30,9 @@ const useStore = create(
       // UI State
       isCommandPaletteOpen: false,
       setCommandPaletteOpen: (isOpen) => set({ isCommandPaletteOpen: isOpen }),
+      
+      isAuthOpen: false,
+      setAuthOpen: (isOpen) => set({ isAuthOpen: isOpen }),
     }),
     {
       name: 'diu-academic-analytics-storage',
