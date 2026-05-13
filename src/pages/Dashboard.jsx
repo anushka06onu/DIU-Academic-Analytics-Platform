@@ -153,6 +153,95 @@ const Dashboard = () => {
     );
   }
 
+  const generateInsights = () => {
+    if (chartData.length === 0) return [];
+    
+    const insights = [];
+    
+    // Insight 1: Trend
+    if (chartData.length >= 2) {
+      const last = chartData[chartData.length - 1].gpa;
+      const prev = chartData[chartData.length - 2].gpa;
+      if (last > prev) {
+        insights.push({
+          icon: <TrendingUp className="text-blue-500 mt-0.5 shrink-0" size={18} />,
+          text: `Great job! Your semester GPA improved from ${prev.toFixed(2)} to ${last.toFixed(2)}. Keep up the momentum!`,
+          bg: 'bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800/30'
+        });
+      } else if (last < prev) {
+        insights.push({
+          icon: <AlertTriangle className="text-orange-500 mt-0.5 shrink-0" size={18} />,
+          text: `Your recent semester GPA (${last.toFixed(2)}) dropped slightly compared to the previous one (${prev.toFixed(2)}). Identify the tough courses and adapt!`,
+          bg: 'bg-orange-50 dark:bg-orange-900/20 border-orange-100 dark:border-orange-800/30'
+        });
+      } else {
+        insights.push({
+          icon: <TrendingUp className="text-blue-500 mt-0.5 shrink-0" size={18} />,
+          text: `You maintained a perfectly consistent GPA of ${last.toFixed(2)} across your last two semesters!`,
+          bg: 'bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800/30'
+        });
+      }
+    } else {
+      insights.push({
+        icon: <Award className="text-green-500 mt-0.5 shrink-0" size={18} />,
+        text: `Great start to your academic journey! Add more semesters to unlock trend analysis.`,
+        bg: 'bg-green-50 dark:bg-green-900/20 border-green-100 dark:border-green-800/30'
+      });
+    }
+
+    // Insight 2: Credit Load Analysis
+    if (chartData.length >= 2) {
+      const heavySemesters = chartData.filter(s => s.credits >= 15);
+      const lightSemesters = chartData.filter(s => s.credits < 15);
+      
+      const heavyAvg = heavySemesters.length ? heavySemesters.reduce((a,b)=>a+b.gpa,0)/heavySemesters.length : 0;
+      const lightAvg = lightSemesters.length ? lightSemesters.reduce((a,b)=>a+b.gpa,0)/lightSemesters.length : 0;
+
+      if (heavyAvg > lightAvg && heavySemesters.length > 0 && lightSemesters.length > 0) {
+        insights.push({
+          icon: <Award className="text-green-500 mt-0.5 shrink-0" size={18} />,
+          text: `You actually perform better in heavy semesters (15+ credits) with a ${heavyAvg.toFixed(2)} avg vs ${lightAvg.toFixed(2)} in lighter ones.`,
+          bg: 'bg-green-50 dark:bg-green-900/20 border-green-100 dark:border-green-800/30'
+        });
+      } else if (lightAvg > heavyAvg && heavySemesters.length > 0 && lightSemesters.length > 0) {
+        insights.push({
+          icon: <Award className="text-green-500 mt-0.5 shrink-0" size={18} />,
+          text: `You perform much stronger in lighter semesters (<15 credits). Consider balancing your future course load to protect your CGPA.`,
+          bg: 'bg-green-50 dark:bg-green-900/20 border-green-100 dark:border-green-800/30'
+        });
+      }
+    }
+
+    // Insight 3: Grade Analysis
+    const allCourses = semesters.flatMap(s => s.courses);
+    const lowGrades = allCourses.filter(c => c.grade <= 2.75 && c.grade > 0);
+    const failedGrades = allCourses.filter(c => c.grade === 0);
+
+    if (failedGrades.length > 0) {
+      insights.push({
+        icon: <AlertTriangle className="text-red-500 mt-0.5 shrink-0" size={18} />,
+        text: `You have ${failedGrades.length} failed course(s). Retaking these will have the largest immediate mathematical impact on your CGPA.`,
+        bg: 'bg-red-50 dark:bg-red-900/20 border-red-100 dark:border-red-800/30'
+      });
+    } else if (lowGrades.length > 0) {
+       insights.push({
+        icon: <AlertTriangle className="text-orange-500 mt-0.5 shrink-0" size={18} />,
+        text: `You have ${lowGrades.length} course(s) with a B- or lower. Retaking these could rapidly boost your overall CGPA.`,
+        bg: 'bg-orange-50 dark:bg-orange-900/20 border-orange-100 dark:border-orange-800/30'
+      });
+    } else if (allCourses.length > 0) {
+      insights.push({
+        icon: <Award className="text-green-500 mt-0.5 shrink-0" size={18} />,
+        text: `Excellent performance! You have no failing grades or low marks dragging down your CGPA.`,
+        bg: 'bg-green-50 dark:bg-green-900/20 border-green-100 dark:border-green-800/30'
+      });
+    }
+
+    return insights;
+  };
+
+  const dynamicInsights = generateInsights();
+
   return (
     <div className="space-y-8 pb-10" id="pdf-content">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -250,32 +339,20 @@ const Dashboard = () => {
         >
           <h2 className="text-lg font-bold mb-4">Smart Insights</h2>
           <div className="space-y-4 flex-1">
-            <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/30 transition-transform hover:-translate-y-1">
-              <div className="flex items-start gap-3">
-                <TrendingUp className="text-blue-500 mt-0.5 shrink-0" size={18} />
-                <p className="text-sm text-gray-700 dark:text-gray-300">
-                  Your GPA trend has improved over the last 2 semesters. Keep up the momentum!
-                </p>
-              </div>
-            </div>
-            
-            <div className="p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-800/30 transition-transform hover:-translate-y-1">
-              <div className="flex items-start gap-3">
-                <Award className="text-green-500 mt-0.5 shrink-0" size={18} />
-                <p className="text-sm text-gray-700 dark:text-gray-300">
-                  You perform 15% better in high-credit semesters compared to lighter ones.
-                </p>
-              </div>
-            </div>
-
-            <div className="p-4 rounded-xl bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-800/30 transition-transform hover:-translate-y-1">
-              <div className="flex items-start gap-3">
-                <AlertTriangle className="text-orange-500 mt-0.5 shrink-0" size={18} />
-                <p className="text-sm text-gray-700 dark:text-gray-300">
-                  Recommendation: Avoid taking more than 18 credits next semester to maintain your high CGPA.
-                </p>
-              </div>
-            </div>
+            {dynamicInsights.length > 0 ? (
+              dynamicInsights.map((insight, idx) => (
+                <div key={idx} className={`p-4 rounded-xl border transition-transform hover:-translate-y-1 ${insight.bg}`}>
+                  <div className="flex items-start gap-3">
+                    {insight.icon}
+                    <p className="text-sm text-gray-800 dark:text-gray-200">
+                      {insight.text}
+                    </p>
+                  </div>
+                </div>
+              ))
+            ) : (
+               <div className="text-gray-500 text-sm text-center py-10">Add semesters to unlock insights.</div>
+            )}
           </div>
         </motion.div>
       </div>
