@@ -52,7 +52,7 @@ const Navbar = () => {
             <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary/30">
               DIU
             </div>
-            <span className="font-bold text-xl tracking-tight hidden sm:block dark:text-white">Analytics Platform</span>
+            <span className="font-bold text-base sm:text-xl tracking-tight dark:text-white">Analytics Platform</span>
           </a>
 
           {/* Desktop Navigation */}
