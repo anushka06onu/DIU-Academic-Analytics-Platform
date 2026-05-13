@@ -1,5 +1,7 @@
 # DIU Academic Analytics Platform
 
+**[🌐 View Live Deployment on Vercel](https://diu-academic-analytics-platform.vercel.app/)**
+
 A professional, full-stack web application designed specifically for Daffodil International University (DIU) students to track, analyze, and predict their academic performance.
 
 ## The Objective
