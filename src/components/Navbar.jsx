@@ -84,12 +84,28 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile Hamburger Button */}
-          <div className="md:hidden flex items-center gap-4 z-50">
-            <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-300">
+          {/* Mobile Actions */}
+          <div className="md:hidden flex items-center gap-3 z-50">
+            {user ? (
+              <button 
+                onClick={handleLogout}
+                className="p-1.5 rounded-full hover:bg-red-50 text-red-500 transition-colors"
+                title="Logout"
+              >
+                <LogOut size={20} />
+              </button>
+            ) : (
+              <button 
+                onClick={() => setAuthOpen(true)}
+                className="bg-primary text-white px-4 py-1.5 rounded-full text-xs font-bold hover:bg-primary-focus transition-colors shadow-sm"
+              >
+                Sign In
+              </button>
+            )}
+            <button onClick={toggleTheme} className="p-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-300">
               {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
             </button>
-            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-gray-600 dark:text-gray-300 focus:outline-none">
+            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-1.5 text-gray-600 dark:text-gray-300 focus:outline-none">
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
