@@ -296,7 +296,7 @@ const Dashboard = () => {
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#374151" opacity={0.2} />
-                  <XAxis dataKey="semester" axisLine={false} tickLine={false} tick={{ fontSize: 12 }} dy={10} />
+                  <XAxis dataKey="semester" axisLine={false} tickLine={false} tick={{ fontSize: 12 }} dy={10} interval={0} />
                   <YAxis axisLine={false} tickLine={false} domain={[2.0, 4.0]} tick={{ fontSize: 12 }} />
                   <Tooltip 
                     contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '8px', color: '#fff' }}
@@ -365,13 +365,19 @@ const Dashboard = () => {
             <TrendingUp size={24} className="text-primary"/> GPA Progression
           </h2>
           <div className="flex justify-center w-full border border-gray-200 rounded-2xl p-4 bg-white">
-            <LineChart width={700} height={300} data={chartData} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
+            <AreaChart width={700} height={300} data={chartData} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
+              <defs>
+                <linearGradient id="colorCgpaPrint" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                  <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
               <XAxis dataKey="semester" tick={{ fill: '#374151', fontSize: 12 }} dy={10} axisLine={false} tickLine={false} interval={0} />
               <YAxis domain={[2.0, 4.0]} tick={{ fill: '#374151', fontSize: 12 }} axisLine={false} tickLine={false} />
-              <Line isAnimationActive={false} type="monotone" dataKey="cgpa" name="Cumulative CGPA" stroke="#10b981" strokeWidth={3} dot={{ r: 4, fill: '#10b981' }} />
+              <Area isAnimationActive={false} type="monotone" dataKey="cgpa" name="Cumulative CGPA" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorCgpaPrint)" />
               <Line isAnimationActive={false} type="monotone" dataKey="gpa" name="Semester GPA" stroke="#3b82f6" strokeWidth={2} strokeDasharray="5 5" dot={{ r: 4 }} />
-            </LineChart>
+            </AreaChart>
           </div>
         </div>
 
