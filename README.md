@@ -29,6 +29,23 @@ The **DIU Academic Analytics Platform** bridges this gap by providing a centrali
   * Generate and download highly structured, formatted PDF academic transcripts.
   * Print-optimized layouts that automatically exclude UI elements and maintain vector-quality graphical progression charts.
 
+## App Previews
+
+### 1. Landing Page
+![Landing Page](public/screenshots/1-landing.png)
+
+### 2. Academic Dashboard
+![Dashboard](public/screenshots/2-dashboard.png)
+
+### 3. Semester Management
+![Semesters](public/screenshots/3-semesters.png)
+
+### 4. Goal Tracker & Simulation
+![Goal Tracker](public/screenshots/4-goals.png)
+
+### 5. Professional PDF Report Generation
+![PDF Report](public/screenshots/5-pdf.png)
+
 ## Technologies Used
 
 * **Frontend**: React.js, Vite
