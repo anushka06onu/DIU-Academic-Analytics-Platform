@@ -145,7 +145,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="w-full bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-primary transition-colors"
-                    placeholder="Fateha Hossain Anushka"
+                    placeholder="Student Name"
                   />
                 </div>
               </motion.div>
