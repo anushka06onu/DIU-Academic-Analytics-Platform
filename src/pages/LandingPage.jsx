@@ -1,10 +1,23 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, BarChart3, TrendingUp, Award, BookOpen } from 'lucide-react';
+import Footer from '../components/Footer';
+import Navbar from '../components/Navbar';
+import useStore from '../store/useStore';
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  const { user } = useStore();
+
+  const handleStart = () => {
+    if (user) {
+      navigate('/dashboard');
+    } else {
+      // the Navbar handles auth state now
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   const features = [
     {
@@ -30,30 +43,10 @@ const LandingPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-background-dark text-gray-900 dark:text-gray-100 font-sans selection:bg-primary/30">
-      {/* Navbar */}
-      <nav className="container mx-auto px-6 py-6 flex items-center justify-between relative z-10">
-        <div className="flex items-center gap-2">
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary/30">
-            DIU
-          </div>
-          <span className="font-bold text-xl tracking-tight dark:text-white">Analytics Platform</span>
-        </div>
-        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600 dark:text-gray-300">
-          <a href="#features" className="hover:text-primary transition-colors">Features</a>
-          <a href="#how-it-works" className="hover:text-primary transition-colors">How it Works</a>
-        </div>
-        <button 
-          onClick={() => navigate('/dashboard')}
-          className="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors shadow-lg"
-        >
-          Open App
-        </button>
-      </nav>
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-background-dark text-gray-900 dark:text-gray-100 font-sans selection:bg-primary/30">
+      <Navbar />
 
-      {/* Hero Section */}
-      <main className="container mx-auto px-6 pt-20 pb-32 relative">
-        {/* Background Gradients */}
+      <main className="flex-1 container mx-auto px-6 pt-32 pb-32 relative">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-primary/20 blur-[120px] rounded-full pointer-events-none" />
         <div className="absolute top-40 right-0 w-[400px] h-[400px] bg-blue-500/10 blur-[100px] rounded-full pointer-events-none" />
 
@@ -93,18 +86,22 @@ const LandingPage = () => {
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <button 
-              onClick={() => navigate('/dashboard')}
+              onClick={handleStart}
               className="w-full sm:w-auto px-8 py-4 rounded-full bg-primary text-white font-semibold flex items-center justify-center gap-2 hover:bg-primary-focus transition-all shadow-xl shadow-primary/30 hover:shadow-primary/50 hover:-translate-y-0.5"
             >
               Start Tracking Now <ArrowRight size={20} />
             </button>
-            <button className="w-full sm:w-auto px-8 py-4 rounded-full bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-semibold flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-all border border-gray-200 dark:border-gray-700">
-              View Demo
+            <button 
+              onClick={() => {
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+              }}
+              className="w-full sm:w-auto px-8 py-4 rounded-full bg-white dark:bg-card-dark text-gray-900 dark:text-white font-semibold flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-all border border-gray-200 dark:border-gray-700"
+            >
+              Learn More
             </button>
           </motion.div>
         </div>
 
-        {/* Dashboard Mockup */}
         <motion.div 
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -114,7 +111,6 @@ const LandingPage = () => {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-50 dark:to-background-dark z-10" />
           <div className="glassmorphism rounded-2xl overflow-hidden shadow-2xl border border-white/20 dark:border-gray-700 p-2 md:p-4">
             <div className="bg-white dark:bg-card-dark rounded-xl w-full h-[400px] md:h-[600px] border border-gray-100 dark:border-gray-800 flex flex-col">
-              {/* Mock Dashboard Header */}
               <div className="h-14 border-b border-gray-100 dark:border-gray-800 flex items-center px-6 gap-4">
                 <div className="flex gap-2">
                   <div className="w-3 h-3 rounded-full bg-red-400" />
@@ -124,7 +120,6 @@ const LandingPage = () => {
                 <div className="flex-1" />
                 <div className="w-32 h-6 bg-gray-100 dark:bg-gray-800 rounded-full animate-pulse" />
               </div>
-              {/* Mock Dashboard Body */}
               <div className="flex-1 p-6 flex gap-6">
                 <div className="hidden md:flex w-48 flex-col gap-4">
                   <div className="h-8 bg-gray-100 dark:bg-gray-800 rounded-md animate-pulse" />
@@ -145,8 +140,7 @@ const LandingPage = () => {
         </motion.div>
       </main>
 
-      {/* Features Section */}
-      <section id="features" className="py-24 bg-white dark:bg-card-dark border-t border-gray-200 dark:border-gray-800">
+      <section id="features" className="py-24 bg-white dark:bg-card-dark border-t border-gray-200 dark:border-gray-800 relative z-20">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Everything You Need for Academic Excellence</h2>
@@ -163,9 +157,9 @@ const LandingPage = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="p-6 rounded-2xl bg-gray-50 dark:bg-background-dark border border-gray-100 dark:border-gray-800 hover:shadow-xl transition-all hover:-translate-y-1"
+                className="p-6 rounded-2xl bg-gray-50 dark:bg-background-dark border border-gray-100 dark:border-gray-800 hover:shadow-xl transition-all hover:-translate-y-1 group"
               >
-                <div className="w-12 h-12 rounded-xl bg-white dark:bg-card-dark border border-gray-200 dark:border-gray-700 flex items-center justify-center mb-6 shadow-sm">
+                <div className="w-12 h-12 rounded-xl bg-white dark:bg-card-dark border border-gray-200 dark:border-gray-700 flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform">
                   {feature.icon}
                 </div>
                 <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
@@ -178,27 +172,55 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-primary/5 dark:bg-primary/10" />
-        <div className="container mx-auto px-6 relative z-10 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to take control of your CGPA?</h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 mb-10 max-w-2xl mx-auto">
-            Join other top-performing DIU students who are using our platform to optimize their academic journey.
-          </p>
-          <button 
-            onClick={() => navigate('/dashboard')}
-            className="px-8 py-4 rounded-full bg-primary text-white font-semibold hover:bg-primary-focus transition-all shadow-xl shadow-primary/30 hover:shadow-primary/50 hover:-translate-y-0.5 text-lg"
-          >
-            Get Started for Free
-          </button>
+      <section id="faq" className="py-24 bg-gray-50 dark:bg-background-dark border-t border-gray-200 dark:border-gray-800 relative z-20">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Frequently Asked Questions</h2>
+            <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              Everything you need to know about the DIU Academic Analytics Platform.
+            </p>
+          </div>
+          
+          <div className="max-w-3xl mx-auto space-y-4">
+            {[
+              { q: 'Is this platform free?', a: 'Yes! The platform is completely free for all DIU students to use.' },
+              { q: 'Is my data secure?', a: 'Absolutely. We use Google Firebase for enterprise-grade security and authentication.' },
+              { q: 'How does the prediction system work?', a: 'It calculates your required GPA based on your current CGPA, completed credits, and the target CGPA you set for your graduation.' },
+              { q: 'Can I export my report?', a: 'Yes, you can instantly export a perfectly formatted PDF of your dashboard and statistics directly from the platform.' }
+            ].map((faq, idx) => {
+              const [isOpen, setIsOpen] = useState(false);
+              return (
+                <div key={idx} className="bg-white dark:bg-card-dark rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
+                  <button 
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="w-full px-6 py-4 flex items-center justify-between font-bold text-lg text-left hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                  >
+                    {faq.q}
+                    <div className={`transform transition-transform ${isOpen ? 'rotate-180' : ''}`}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                    </div>
+                  </button>
+                  <AnimatePresence>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                      >
+                        <div className="px-6 pb-4 text-gray-600 dark:text-gray-400 border-t border-gray-100 dark:border-gray-800 mt-2 pt-4">
+                          {faq.a}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-8 bg-white dark:bg-card-dark border-t border-gray-200 dark:border-gray-800 text-center text-sm text-gray-500 dark:text-gray-400">
-        <p>© {new Date().getFullYear()} DIU Academic Analytics. Built for Daffodil International University students.</p>
-      </footer>
+      <Footer />
     </div>
   );
 };
