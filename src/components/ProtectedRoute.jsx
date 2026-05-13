@@ -8,7 +8,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 
 export const AuthProvider = ({ children }) => {
-  const { setUser, setSemesters } = useStore();
+  const { setUser, setSemesters, setDegreeCredits, setTargetCgpa } = useStore();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -19,9 +19,9 @@ export const AuthProvider = ({ children }) => {
           const userDoc = await getDoc(doc(db, 'users', user.uid));
           if (userDoc.exists()) {
             const data = userDoc.data();
-            if (data.semesters) {
-              setSemesters(data.semesters);
-            }
+            if (data.semesters) setSemesters(data.semesters);
+            if (data.degreeCredits) setDegreeCredits(data.degreeCredits);
+            if (data.targetCgpa) setTargetCgpa(data.targetCgpa);
           }
         } catch (error) {
           console.error("Error loading user data:", error);
@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     });
     return unsubscribe;
-  }, [setUser, setSemesters]);
+  }, [setUser, setSemesters, setDegreeCredits, setTargetCgpa]);
 
   if (loading) {
     return (

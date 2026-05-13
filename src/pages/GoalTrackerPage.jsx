@@ -1,15 +1,33 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Target, TrendingUp, AlertCircle, CheckCircle2, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Target, TrendingUp, AlertCircle, CheckCircle2, ArrowUpRight, ArrowDownRight, Save } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import useStore from '../store/useStore';
 import toast from 'react-hot-toast';
+import { db } from '../lib/firebase';
+import { doc, setDoc } from 'firebase/firestore';
 
 const COLORS = ['#10b981', '#1e293b'];
 
 const GoalTrackerPage = () => {
-  const { semesters } = useStore();
-  const [targetCGPA, setTargetCGPA] = useState(3.8);
+  const { semesters, targetCgpa, setTargetCgpa, degreeCredits, setDegreeCredits, user } = useStore();
+
+  const handleSaveGoals = async () => {
+    if (!user) {
+      toast.error('You must be logged in to save settings.');
+      return;
+    }
+    const toastId = toast.loading('Saving goals to database...');
+    try {
+      await setDoc(doc(db, 'users', user.uid), { 
+        targetCgpa: Number(targetCgpa), 
+        degreeCredits: Number(degreeCredits) 
+      }, { merge: true });
+      toast.success('Goals saved successfully!', { id: toastId });
+    } catch (error) {
+      toast.error(`Error: ${error.message}`, { id: toastId });
+    }
+  };
 
   const calculateOverallStats = () => {
     let totalPoints = 0;
@@ -27,16 +45,15 @@ const GoalTrackerPage = () => {
   };
 
   const { currentCGPA, totalCredits: completedCredits } = calculateOverallStats();
-  const DEGREE_TOTAL_CREDITS = 138; // standard DIU degree credits
-  const remainingCredits = Math.max(0, DEGREE_TOTAL_CREDITS - completedCredits);
+  const remainingCredits = Math.max(0, degreeCredits - completedCredits);
   
   // Calculate required GPA for remaining credits
   let requiredAvgGPA = 0;
   if (remainingCredits > 0) {
-    requiredAvgGPA = ((targetCGPA * DEGREE_TOTAL_CREDITS) - (currentCGPA * completedCredits)) / remainingCredits;
+    requiredAvgGPA = ((targetCgpa * degreeCredits) - (currentCGPA * completedCredits)) / remainingCredits;
   }
 
-  const completionPercentage = DEGREE_TOTAL_CREDITS > 0 ? Math.min(100, (completedCredits / DEGREE_TOTAL_CREDITS) * 100).toFixed(0) : 0;
+  const completionPercentage = degreeCredits > 0 ? Math.min(100, (completedCredits / degreeCredits) * 100).toFixed(0) : 0;
   
   const data = [
     { name: 'Completed Credits', value: completedCredits },
@@ -62,23 +79,44 @@ const GoalTrackerPage = () => {
             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
               <Target size={20} />
             </div>
-            <h2 className="text-lg font-bold">Set Target</h2>
+            <h2 className="text-lg font-bold">Goal Settings</h2>
           </div>
 
           <div className="space-y-6">
+            <div>
+              <label className="text-sm text-gray-500 dark:text-gray-400 font-medium mb-2 block">Total Degree Credits</label>
+              <div className="flex items-center gap-4">
+                <input 
+                  type="number" 
+                  min="0" max="300" step="1" 
+                  value={degreeCredits}
+                  onChange={(e) => setDegreeCredits(Number(e.target.value))}
+                  className="w-full bg-gray-50 dark:bg-background-dark border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-3 font-semibold outline-none focus:border-primary transition-colors"
+                />
+              </div>
+              <p className="text-xs text-gray-400 mt-2">Example: DIU SWE is typically 138 credits.</p>
+            </div>
+
             <div>
               <label className="text-sm text-gray-500 dark:text-gray-400 font-medium mb-2 block">Target Graduation CGPA</label>
               <div className="flex items-center gap-4">
                 <input 
                   type="range" 
                   min="2.0" max="4.0" step="0.01" 
-                  value={targetCGPA}
-                  onChange={(e) => setTargetCGPA(Number(e.target.value))}
+                  value={targetCgpa}
+                  onChange={(e) => setTargetCgpa(Number(e.target.value))}
                   className="flex-1 accent-primary cursor-pointer"
                 />
-                <div className="w-16 text-center font-bold text-xl">{targetCGPA.toFixed(2)}</div>
+                <div className="w-16 text-center font-bold text-xl">{Number(targetCgpa).toFixed(2)}</div>
               </div>
             </div>
+
+            <button 
+              onClick={handleSaveGoals}
+              className="w-full flex items-center justify-center gap-2 bg-gray-900 dark:bg-gray-700 hover:bg-black dark:hover:bg-gray-600 text-white px-5 py-3 rounded-xl text-sm font-semibold transition-all shadow-sm"
+            >
+              <Save size={16} /> Save Settings
+            </button>
 
             <div className="p-4 rounded-xl bg-gray-50 dark:bg-background-dark border border-gray-100 dark:border-gray-800 transition-all hover:shadow-md">
               <div className="text-sm text-gray-500 mb-1">Required Avg. GPA</div>
@@ -98,7 +136,7 @@ const GoalTrackerPage = () => {
           transition={{ delay: 0.1 }}
           className="lg:col-span-2 bg-white dark:bg-card-dark p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col md:flex-row items-center gap-8"
         >
-          <div className="w-48 h-48 relative">
+          <div className="w-48 h-48 relative shrink-0">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -155,7 +193,7 @@ const GoalTrackerPage = () => {
                 <div className="flex items-start gap-3 text-sm">
                   <AlertCircle className="text-red-500 mt-0.5 shrink-0" size={18} />
                   <p className="text-gray-600 dark:text-gray-400">
-                    This target is mathematically impossible with your remaining credits. Maximum achievable CGPA is <strong>{(((currentCGPA * completedCredits) + (4.0 * remainingCredits)) / DEGREE_TOTAL_CREDITS).toFixed(2)}</strong>.
+                    This target is mathematically impossible with your remaining credits. Maximum achievable CGPA is <strong>{(((currentCGPA * completedCredits) + (4.0 * remainingCredits)) / degreeCredits).toFixed(2)}</strong>.
                   </p>
                 </div>
               ) : (

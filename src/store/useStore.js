@@ -15,6 +15,10 @@ const useStore = create(
       // App Data State
       semesters: [],
       setSemesters: (semesters) => set({ semesters }),
+      degreeCredits: 138,
+      setDegreeCredits: (degreeCredits) => set({ degreeCredits }),
+      targetCgpa: 3.80,
+      setTargetCgpa: (targetCgpa) => set({ targetCgpa }),
       addSemester: (semester) => set((state) => ({ semesters: [semester, ...state.semesters] })),
       updateSemester: (id, updated) => set((state) => ({
         semesters: state.semesters.map(s => s.id === id ? { ...s, ...updated } : s)
