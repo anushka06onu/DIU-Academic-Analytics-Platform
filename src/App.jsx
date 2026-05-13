@@ -24,7 +24,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <Toaster position="top-right" toastOptions={{
+        <Toaster position="top-right" containerClassName="print:hidden" toastOptions={{
           style: {
             background: theme === 'dark' ? '#1e293b' : '#fff',
             color: theme === 'dark' ? '#fff' : '#1e293b',

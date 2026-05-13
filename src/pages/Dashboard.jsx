@@ -29,7 +29,7 @@ const StatCard = ({ title, value, icon, trend, trendValue, delay }) => (
 );
 
 const Dashboard = () => {
-  const { semesters, setSemesters, user } = useStore();
+  const { semesters, setSemesters, user, degreeCredits, targetCgpa } = useStore();
   const [isExporting, setIsExporting] = useState(false);
 
   // Calculate Data
@@ -56,10 +56,26 @@ const Dashboard = () => {
 
     const currentCgpa = chartData.length > 0 ? chartData[chartData.length - 1].cgpa : 0;
     
-    // Simple prediction algorithm
-    const prediction = currentCgpa > 0 ? Math.min(4.0, currentCgpa + 0.05).toFixed(2) : "0.00";
+    const totalDegreeCredits = degreeCredits || 144;
+    const target = targetCgpa || 3.5;
+    const remainingCredits = Math.max(0, totalDegreeCredits - totalCredits);
     
-    return { chartData, currentCgpa, totalCredits, prediction };
+    let predictionStr = "0.00";
+    if (remainingCredits > 0) {
+      const requiredPoints = (target * totalDegreeCredits) - totalPoints;
+      const requiredCgpa = requiredPoints / remainingCredits;
+      if (requiredCgpa > 4.0) {
+        predictionStr = ">4.0 Req.";
+      } else if (requiredCgpa <= 0) {
+        predictionStr = "Goal Met";
+      } else {
+        predictionStr = requiredCgpa.toFixed(2) + " Req.";
+      }
+    } else {
+       predictionStr = currentCgpa >= target ? "Goal Met" : "Missed";
+    }
+    
+    return { chartData, currentCgpa, totalCredits, prediction: predictionStr };
   };
 
   const { chartData, currentCgpa, totalCredits, prediction } = calculateData();
@@ -371,8 +387,8 @@ const Dashboard = () => {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
                 <XAxis dataKey="semester" tick={{ fill: '#374151', fontSize: 12 }} dy={10} axisLine={false} tickLine={false} />
                 <YAxis domain={[2.0, 4.0]} tick={{ fill: '#374151', fontSize: 12 }} axisLine={false} tickLine={false} />
-                <Line type="monotone" dataKey="cgpa" name="Cumulative CGPA" stroke="#10b981" strokeWidth={3} dot={{ r: 4, fill: '#10b981' }} />
-                <Line type="monotone" dataKey="gpa" name="Semester GPA" stroke="#3b82f6" strokeWidth={2} strokeDasharray="5 5" dot={{ r: 4 }} />
+                <Line isAnimationActive={false} type="monotone" dataKey="cgpa" name="Cumulative CGPA" stroke="#10b981" strokeWidth={3} dot={{ r: 4, fill: '#10b981' }} />
+                <Line isAnimationActive={false} type="monotone" dataKey="gpa" name="Semester GPA" stroke="#3b82f6" strokeWidth={2} strokeDasharray="5 5" dot={{ r: 4 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
