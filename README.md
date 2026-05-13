@@ -1,36 +1,40 @@
-# DIU Academic Analytics Platform 🎓
+# DIU Academic Analytics Platform
 
-![DIU Academic Analytics Banner](public/icons.svg) <!-- Replace with your actual banner if needed -->
+A professional, full-stack web application designed specifically for Daffodil International University (DIU) students to track, analyze, and predict their academic performance.
 
-A modern, professional, and visually stunning full-stack web application designed specifically for Daffodil International University (DIU) students. This platform goes beyond a simple CGPA calculator to provide a real SaaS-level student productivity and academic intelligence experience.
+## The Objective
 
-## ✨ Features
+The official student portal of Daffodil International University currently only displays individual semester-wise results. It lacks comprehensive analytics, a real-time overall CGPA view, PDF report generation, and predictive capabilities, forcing students to calculate their academic trajectories manually. 
 
-*   **Dynamic Semester System**: Add unlimited semesters (e.g., Spring 2025, Summer 2025). Features smooth expand/collapse animations.
-*   **Intelligent Course Management**: Add courses with codes, titles, and credits. Fully integrates the strict **DIU Grading System** (A+ = 4.00 to F = 0.00).
-*   **Real-Time Analytics Dashboard**: Beautiful animated statistic cards tracking your Current CGPA, Total Credits Completed, and Predicted Graduation CGPA.
-*   **Data Science / AI Features**: 
-    *   **"What-if" Scenario Simulator**: Predict what happens to your overall CGPA if you get a specific GPA next semester.
-    *   **Smart Insights**: Get auto-generated insights ("Your performance is improving", "You perform best in theory-heavy semesters").
-*   **Interactive Visualizations**: High-quality animated charts (using Recharts) for GPA progression line charts and credit completion pie charts.
-*   **Goal Tracking System**: Set a target CGPA and visually track the required performance to reach your goals.
-*   **Modern Premium UI/UX**: Designed with inspiration from Linear and Apple Dashboard. Features glassmorphism, soft shadows, animated gradient backgrounds, and fully responsive mobile-first layouts.
+The **DIU Academic Analytics Platform** bridges this gap by providing a centralized, automated dashboard where students can securely manage their academic data, track their progress, and make data-driven decisions about their future coursework.
 
-## 🛠️ Tech Stack
+## Key Features
 
-*   **Core**: React + Vite (Fast and optimized builds)
-*   **Styling**: Tailwind CSS v4 (Utility-first styling with custom glassmorphism directives)
-*   **Animations**: Framer Motion (Fluid page transitions and micro-interactions)
-*   **Data Visualization**: Recharts (Interactive, responsive charts)
-*   **Icons**: Lucide React
-*   **Future Integrations**: Firebase/Supabase for cloud sync and authentication; jsPDF & html2canvas for PDF report generation.
+* **Secure Authentication & Persistence**
+  * Secure login system restricted exclusively to verified DIU student and faculty email domains.
+  * Real-time data synchronization and persistent cloud storage powered by Firebase Firestore.
 
-## 🚀 Getting Started
+* **Comprehensive Academic Dashboard**
+  * View current overall CGPA, total credits completed, and semester-wise GPA progression at a glance.
+  * Input individual course results using the official DIU grading scale to automatically calculate semester performance.
 
-### Prerequisites
-Make sure you have Node.js installed on your machine.
+* **Data-Driven Predictive Analytics**
+  * **Goal Tracking**: Set a target graduation CGPA and receive real-time calculations on the exact average GPA required in upcoming semesters to achieve that goal.
+  * **Feasibility Alerts**: Intelligent mathematical analysis that instantly warns the user if a desired target CGPA is mathematically impossible to achieve with their remaining degree credits.
+  * **Consistency Tracking**: Auto-generated insights identifying academic trends, performance improvements, and credit-load efficiency.
 
-### Installation
+* **Professional Report Generation**
+  * Generate and download highly structured, formatted PDF academic transcripts.
+  * Print-optimized layouts that automatically exclude UI elements and maintain vector-quality graphical progression charts.
+
+## Technologies Used
+
+* **Frontend**: React.js, Vite
+* **Styling**: Tailwind CSS, Framer Motion
+* **Database & Auth**: Google Firebase (Authentication, Firestore)
+* **Data Visualization**: Recharts
+
+## Local Development
 
 1. Clone the repository:
    ```bash
@@ -38,38 +42,19 @@ Make sure you have Node.js installed on your machine.
    cd DIU-Academic-Analytics-Platform
    ```
 
-2. Install the dependencies:
+2. Install dependencies:
    ```bash
    npm install
    ```
 
-3. Start the development server:
+3. Configure Firebase:
+   Create a `.env` file in the root directory and add your Firebase credentials.
+
+4. Start the development server:
    ```bash
    npm run dev
    ```
 
-4. Open your browser and navigate to `http://localhost:5173` to see the app running!
+## Developer
 
-## 📂 Project Structure
-
-```
-src/
-├── components/       # Reusable UI components
-├── context/          # React Context for global state (Auth, Data)
-├── layouts/          # Main application layouts (Sidebar, Topbar)
-├── lib/              # Utility functions and constants
-├── pages/            # Main application pages (Dashboard, Semesters, etc.)
-├── App.jsx           # Main routing configuration
-└── index.css         # Global Tailwind directives and base styles
-```
-
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](../../issues).
-
-## 📝 License
-
-This project is open-source and available under the [MIT License](LICENSE).
-
----
-*Designed & Developed with ❤️ for DIU Students.*
+Developed by **Fateha Hossain Anushka**.
