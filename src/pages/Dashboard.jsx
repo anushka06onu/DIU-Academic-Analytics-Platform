@@ -3,8 +3,6 @@ import { motion } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { GraduationCap, BookOpen, TrendingUp, Award, AlertTriangle, ArrowUpRight, ArrowDownRight, FileDown } from 'lucide-react';
 import useStore from '../store/useStore';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
 import toast from 'react-hot-toast';
 
 const StatCard = ({ title, value, icon, trend, trendValue, delay }) => (
@@ -222,120 +220,219 @@ const Dashboard = () => {
   const dynamicInsights = generateInsights();
 
   return (
-    <div className="space-y-8 pb-10" id="pdf-content">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold mb-1">Overview</h1>
-          <p className="text-gray-500 dark:text-gray-400 text-sm">Welcome back, {user?.displayName || user?.email?.split('@')[0] || 'Student'}!</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <button 
-            onClick={() => toast('Edit Profile coming soon!', { icon: '✏️' })}
-            className="flex items-center gap-2 bg-white dark:bg-card-dark border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-xl text-sm font-semibold transition-colors"
-          >
-            Edit Profile
-          </button>
-          <button 
-            onClick={handleExportPDF}
-            disabled={isExporting}
-            className="flex items-center gap-2 bg-primary hover:bg-primary-focus text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors shadow-lg shadow-primary/20 disabled:opacity-50"
-          >
-            <FileDown size={18} />
-            {isExporting ? 'Generating...' : 'Export PDF'}
-          </button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard 
-          title="Current CGPA" 
-          value={currentCgpa.toFixed(2)} 
-          icon={<Award size={24} />} 
-          trend={chartData.length > 1 && chartData[chartData.length-1].cgpa >= chartData[chartData.length-2].cgpa ? "up" : "down"} 
-          trendValue={chartData.length > 1 ? Math.abs(chartData[chartData.length-1].cgpa - chartData[chartData.length-2].cgpa).toFixed(2) : "0.00"}
-          delay={0.1}
-        />
-        <StatCard 
-          title="Credits Completed" 
-          value={totalCredits} 
-          icon={<BookOpen size={24} />} 
-          delay={0.2}
-        />
-        <StatCard 
-          title="Predicted Graduation" 
-          value={prediction} 
-          icon={<GraduationCap size={24} />} 
-          trend="up" 
-          trendValue="On Track"
-          delay={0.3}
-        />
-        <StatCard 
-          title="Consistency Score" 
-          value="88%" 
-          icon={<TrendingUp size={24} />} 
-          delay={0.4}
-        />
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="lg:col-span-2 bg-white dark:bg-card-dark p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm"
-        >
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-lg font-bold">GPA Progression</h2>
+    <>
+      {/* --- NORMAL INTERACTIVE DASHBOARD --- */}
+      <div className="space-y-8 pb-10 print:hidden" id="pdf-content">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold mb-1">Overview</h1>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">Welcome back, {user?.displayName || user?.email?.split('@')[0] || 'Student'}!</p>
           </div>
-          <div className="h-[300px] w-full">
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => toast('Edit Profile coming soon!', { icon: '✏️' })}
+              className="flex items-center gap-2 bg-white dark:bg-card-dark border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-xl text-sm font-semibold transition-colors"
+            >
+              Edit Profile
+            </button>
+            <button 
+              onClick={handleExportPDF}
+              disabled={isExporting}
+              className="flex items-center gap-2 bg-primary hover:bg-primary-focus text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors shadow-lg shadow-primary/20 disabled:opacity-50"
+            >
+              <FileDown size={18} />
+              {isExporting ? 'Generating...' : 'Export PDF Report'}
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <StatCard 
+            title="Current CGPA" 
+            value={currentCgpa.toFixed(2)} 
+            icon={<Award size={24} />} 
+            trend={chartData.length > 1 && chartData[chartData.length-1].cgpa >= chartData[chartData.length-2].cgpa ? "up" : "down"} 
+            trendValue={chartData.length > 1 ? Math.abs(chartData[chartData.length-1].cgpa - chartData[chartData.length-2].cgpa).toFixed(2) : "0.00"}
+            delay={0.1}
+          />
+          <StatCard 
+            title="Credits Completed" 
+            value={totalCredits} 
+            icon={<BookOpen size={24} />} 
+            delay={0.2}
+          />
+          <StatCard 
+            title="Predicted Graduation" 
+            value={prediction} 
+            icon={<GraduationCap size={24} />} 
+            trend="up" 
+            trendValue="On Track"
+            delay={0.3}
+          />
+          <StatCard 
+            title="Consistency Score" 
+            value="88%" 
+            icon={<TrendingUp size={24} />} 
+            delay={0.4}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            className="lg:col-span-2 bg-white dark:bg-card-dark p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-lg font-bold">GPA Progression</h2>
+            </div>
+            <div className="h-[300px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorCgpa" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#374151" opacity={0.2} />
+                  <XAxis dataKey="semester" axisLine={false} tickLine={false} tick={{ fontSize: 12 }} dy={10} />
+                  <YAxis axisLine={false} tickLine={false} domain={[2.0, 4.0]} tick={{ fontSize: 12 }} />
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '8px', color: '#fff' }}
+                    itemStyle={{ color: '#fff' }}
+                  />
+                  <Area type="monotone" dataKey="cgpa" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorCgpa)" />
+                  <Line type="monotone" dataKey="gpa" stroke="#3b82f6" strokeWidth={2} dot={{ r: 4 }} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+            className="bg-white dark:bg-card-dark p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col"
+          >
+            <h2 className="text-lg font-bold mb-4">Smart Insights</h2>
+            <div className="space-y-4 flex-1">
+              {dynamicInsights.length > 0 ? (
+                dynamicInsights.map((insight, idx) => (
+                  <div key={idx} className={`p-4 rounded-xl border transition-transform hover:-translate-y-1 ${insight.bg}`}>
+                    <div className="flex items-start gap-3">
+                      {insight.icon}
+                      <p className="text-sm text-gray-800 dark:text-gray-200">
+                        {insight.text}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                 <div className="text-gray-500 text-sm text-center py-10">Add semesters to unlock insights.</div>
+              )}
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
+
+      {/* --- HIDDEN PRINT-ONLY REPORT --- */}
+      <div className="hidden print:block w-full text-black bg-white">
+        <div className="text-center mb-10 pb-6 border-b-2 border-gray-900">
+          <h1 className="text-4xl font-extrabold mb-2 uppercase tracking-wide">DIU Academic Report</h1>
+          <p className="text-xl font-medium text-gray-700">Student: {user?.displayName || user?.email?.split('@')[0] || 'N/A'}</p>
+          <p className="text-sm text-gray-500 mt-2">Generated on: {new Date().toLocaleDateString()}</p>
+        </div>
+        
+        <div className="flex justify-between items-center mb-10 bg-gray-50 p-6 rounded-2xl border border-gray-200" style={{ pageBreakInside: 'avoid' }}>
+          <div className="text-center">
+            <p className="text-sm text-gray-500 uppercase tracking-wide mb-1">Current CGPA</p>
+            <p className="text-3xl font-bold text-primary">{currentCgpa.toFixed(2)}</p>
+          </div>
+          <div className="text-center border-l border-r border-gray-200 px-10">
+            <p className="text-sm text-gray-500 uppercase tracking-wide mb-1">Total Credits</p>
+            <p className="text-3xl font-bold">{totalCredits}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-sm text-gray-500 uppercase tracking-wide mb-1">Predicted Graduation</p>
+            <p className="text-3xl font-bold text-blue-600">{prediction}</p>
+          </div>
+        </div>
+
+        <div className="mb-12" style={{ pageBreakInside: 'avoid' }}>
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+            <TrendingUp size={24} className="text-primary"/> GPA Progression
+          </h2>
+          <div className="h-[300px] w-full border border-gray-200 rounded-2xl p-4 bg-white">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="colorCgpa" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#374151" opacity={0.2} />
-                <XAxis dataKey="semester" axisLine={false} tickLine={false} tick={{ fontSize: 12 }} dy={10} />
-                <YAxis axisLine={false} tickLine={false} domain={[2.0, 4.0]} tick={{ fontSize: 12 }} />
-                <Tooltip 
-                  contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '8px', color: '#fff' }}
-                  itemStyle={{ color: '#fff' }}
-                />
-                <Area type="monotone" dataKey="cgpa" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorCgpa)" />
-                <Line type="monotone" dataKey="gpa" stroke="#3b82f6" strokeWidth={2} dot={{ r: 4 }} />
-              </AreaChart>
+              <LineChart data={chartData} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                <XAxis dataKey="semester" tick={{ fill: '#374151', fontSize: 12 }} dy={10} axisLine={false} tickLine={false} />
+                <YAxis domain={[2.0, 4.0]} tick={{ fill: '#374151', fontSize: 12 }} axisLine={false} tickLine={false} />
+                <Line type="monotone" dataKey="cgpa" name="Cumulative CGPA" stroke="#10b981" strokeWidth={3} dot={{ r: 4, fill: '#10b981' }} />
+                <Line type="monotone" dataKey="gpa" name="Semester GPA" stroke="#3b82f6" strokeWidth={2} strokeDasharray="5 5" dot={{ r: 4 }} />
+              </LineChart>
             </ResponsiveContainer>
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          className="bg-white dark:bg-card-dark p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col"
-        >
-          <h2 className="text-lg font-bold mb-4">Smart Insights</h2>
-          <div className="space-y-4 flex-1">
-            {dynamicInsights.length > 0 ? (
-              dynamicInsights.map((insight, idx) => (
-                <div key={idx} className={`p-4 rounded-xl border transition-transform hover:-translate-y-1 ${insight.bg}`}>
-                  <div className="flex items-start gap-3">
-                    {insight.icon}
-                    <p className="text-sm text-gray-800 dark:text-gray-200">
-                      {insight.text}
-                    </p>
+        <div className="break-before-page">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 border-b-2 border-gray-900 pb-2">
+            <BookOpen size={24} className="text-primary"/> Detailed Semester Breakdown
+          </h2>
+          
+          <div className="space-y-8">
+            {semesters.map((sem, idx) => {
+              const semCredits = sem.courses.reduce((acc, curr) => acc + Number(curr.credit || 0), 0);
+              const semPoints = sem.courses.reduce((acc, curr) => acc + (Number(curr.credit || 0) * Number(curr.grade || 0)), 0);
+              const gpa = semCredits > 0 ? (semPoints / semCredits) : 0;
+
+              return (
+                <div key={idx} className="border border-gray-200 rounded-xl overflow-hidden" style={{ pageBreakInside: 'avoid' }}>
+                  <div className="flex justify-between items-center bg-gray-100 px-6 py-4 border-b border-gray-200">
+                    <h3 className="font-bold text-lg">{sem.name}</h3>
+                    <div className="flex gap-6 text-sm font-semibold text-gray-700">
+                      <span>Semester GPA: <span className={gpa >= 3.5 ? 'text-green-600' : ''}>{gpa.toFixed(2)}</span></span>
+                      <span>Credits: {semCredits}</span>
+                    </div>
                   </div>
+                  
+                  <table className="w-full text-left text-sm">
+                    <thead className="bg-gray-50 text-gray-500 uppercase">
+                      <tr>
+                        <th className="px-6 py-3 font-semibold">Course Code</th>
+                        <th className="px-6 py-3 font-semibold">Course Title</th>
+                        <th className="px-6 py-3 font-semibold text-center">Credits</th>
+                        <th className="px-6 py-3 font-semibold text-center">Grade Achieved</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {sem.courses.map((c, i) => (
+                        <tr key={i} className="hover:bg-gray-50">
+                          <td className="px-6 py-3 font-medium text-gray-900">{c.code}</td>
+                          <td className="px-6 py-3 text-gray-600">{c.title}</td>
+                          <td className="px-6 py-3 text-center text-gray-600">{c.credit}</td>
+                          <td className="px-6 py-3 text-center font-bold">
+                            {c.grade > 0 ? Number(c.grade).toFixed(2) : <span className="text-red-500">F</span>}
+                          </td>
+                        </tr>
+                      ))}
+                      {sem.courses.length === 0 && (
+                        <tr>
+                          <td colSpan="4" className="px-6 py-4 text-center text-gray-500 italic">No courses added for this semester.</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
                 </div>
-              ))
-            ) : (
-               <div className="text-gray-500 text-sm text-center py-10">Add semesters to unlock insights.</div>
-            )}
+              );
+            })}
           </div>
-        </motion.div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
