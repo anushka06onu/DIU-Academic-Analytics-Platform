@@ -88,7 +88,8 @@ const Dashboard = () => {
       pdf.save('Academic_Report.pdf');
       toast.success('PDF Downloaded successfully!', { id: toastId });
     } catch (err) {
-      toast.error('Failed to generate PDF', { id: toastId });
+      console.error("PDF Export Error: ", err);
+      toast.error(`PDF Error: ${err.message || 'Check console for details'}`, { id: toastId, duration: 6000 });
     } finally {
       setIsExporting(false);
     }
