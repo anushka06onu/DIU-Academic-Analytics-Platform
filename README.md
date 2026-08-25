@@ -200,18 +200,18 @@ Academic data is stored under one document per authenticated user:
 
 ```text
 users/{uid}
-â”œâ”€â”€ semesters[]
-â”‚   â”œâ”€â”€ id
-â”‚   â”œâ”€â”€ name
-â”‚   â”œâ”€â”€ expanded
-â”‚   â””â”€â”€ courses[]
-â”‚       â”œâ”€â”€ id
-â”‚       â”œâ”€â”€ code
-â”‚       â”œâ”€â”€ title
-â”‚       â”œâ”€â”€ credit
-â”‚       â””â”€â”€ grade
-â”œâ”€â”€ degreeCredits
-â””â”€â”€ targetCgpa
+├── semesters[]
+│   ├── id
+│   ├── name
+│   ├── expanded
+│   └── courses[]
+│       ├── id
+│       ├── code
+│       ├── title
+│       ├── credit
+│       └── grade
+├── degreeCredits
+└── targetCgpa
 ```
 
 Production Firestore rules should ensure that a user can read and write only `users/{theirUid}`. Domain restrictions should also be enforced through trusted backend rules or claims if institutional-only access is a security requirement; client-side suffix checks alone are not sufficient authorization.
